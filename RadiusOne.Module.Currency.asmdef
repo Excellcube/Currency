@@ -1,0 +1,16 @@
+{
+    "name": "RadiusOne.Module.Currency",
+    "rootNamespace": "",
+    "references": [
+        "GUID:cdcd7e1bdefaf4ab9aace24bb2664c4f"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
