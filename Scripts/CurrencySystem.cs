@@ -10,13 +10,14 @@ using RadiusOne.Currency;
 /// 
 
 // 게임 시스템의 초기화 이전에 CurrencySystem의 Awake가 실행되어 CurrencySystem의 인스턴스를 참조할 수 있어야 한다.
+[ExecuteInEditMode]
 [DefaultExecutionOrder(-10000)]
 public class CurrencySystem : MonoBehaviour {
     /// 
     ///  외부 접근 편의성을 위한 static 필드 영역.
     /// 
     private static CurrencyModel m_Model = new CurrencyModel();
-
+    
     public static BigNum gold {
         get {
             return m_Model.gold;

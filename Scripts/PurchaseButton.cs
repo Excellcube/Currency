@@ -82,6 +82,9 @@ public class PurchaseButton : MonoBehaviour
     /// </summary>
     private bool m_IsForceDisabled = false;
 
+    private void Awake() {
+        RegisterButtonClickEvent();
+    }
 
     private void OnEnable() {
         onCurrencyUpdated.AddListener(UpdateButton);
@@ -90,6 +93,19 @@ public class PurchaseButton : MonoBehaviour
 
     private void OnDisable() {
         onCurrencyUpdated.RemoveListener(UpdateButton);
+    }
+
+    /// <summary>
+    ///   Button의 onClick에 할당된 이벤트를 구매 후 실행이 되도록 수정.
+    /// </summary>
+    private void RegisterButtonClickEvent()
+    {
+        if(m_Button == null) {
+            m_Button = GetComponent<Button>();
+        }
+
+        UnityEvent purchaseEvent = m_Button.onClick;
+        SetOnPurchaseListener(purchaseEvent);
     }
 
     private void UpdateText(BigNum price) {
@@ -154,11 +170,11 @@ public class PurchaseButton : MonoBehaviour
         m_Button.onClick.AddListener(() => {
             if(m_Price <= currencyValue) {
                 // 구매에 성공했을 경우.
-                purchaseCallback.Invoke();
+                // purchaseCallback.Invoke();
                 currencyValue -= m_Price;
             } else {
                 // 구매에 실패했을 경우.
-                failureCallback?.Invoke();
+                // failureCallback?.Invoke();
             }
         });
     }
