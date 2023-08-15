@@ -42,6 +42,16 @@ public class PurchaseButton : MonoBehaviour
             UpdateText(value);
         }
     }
+    
+
+    [Header("Events")]
+    [SerializeField]
+    private UnityEvent m_OnPurchase = new UnityEvent();
+
+    [SerializeField]
+    private UnityEvent m_OnFailure = new UnityEvent();
+
+
 
     /// <summary>
     ///   현재 버튼의 재화 설정값에 따라 재화 업데이트 시 호출되는 이벤트를 리턴.
@@ -83,7 +93,9 @@ public class PurchaseButton : MonoBehaviour
     private bool m_IsForceDisabled = false;
 
     private void Awake() {
-        RegisterButtonClickEvent();
+        DisableButtonClickEvent();
+
+        SetOnPurchaseListener(m_OnPurchase, m_OnFailure);
     }
 
     private void OnEnable() {
@@ -96,16 +108,30 @@ public class PurchaseButton : MonoBehaviour
     }
 
     /// <summary>
-    ///   Button의 onClick에 할당된 이벤트를 구매 후 실행이 되도록 수정.
+    ///   Button의 onClick에 할당된 이벤트는 실행이 되지 않도록 변경
     /// </summary>
-    private void RegisterButtonClickEvent()
+    private void DisableButtonClickEvent()
     {
         if(m_Button == null) {
             m_Button = GetComponent<Button>();
         }
 
-        UnityEvent purchaseEvent = m_Button.onClick;
-        SetOnPurchaseListener(purchaseEvent);
+        UnityEvent buttonEvent = m_Button.onClick;
+        int buttonEventsCount = buttonEvent.GetPersistentEventCount();
+
+        if(buttonEventsCount == 0) {
+            return;
+        }
+
+        for(int i=0 ; i<buttonEventsCount ; i++)
+        {
+            // 기존에 등록 되어 있던 이벤트는 실행되지 않도록 한다.
+            buttonEvent.SetPersistentListenerState(i, UnityEventCallState.Off);
+        }
+
+        buttonEvent.AddListener(()=>{
+            Debug.LogError("[Currency] PurchaseButton가 추가된 Button의 OnClick에 이벤트를 직접 할당할 수 없습니다. PurchaseButton 컴포넌트에 이벤트를 할당해주세요");
+        });
     }
 
     private void UpdateText(BigNum price) {
@@ -170,11 +196,11 @@ public class PurchaseButton : MonoBehaviour
         m_Button.onClick.AddListener(() => {
             if(m_Price <= currencyValue) {
                 // 구매에 성공했을 경우.
-                // purchaseCallback.Invoke();
+                purchaseCallback.Invoke();
                 currencyValue -= m_Price;
             } else {
                 // 구매에 실패했을 경우.
-                // failureCallback?.Invoke();
+                failureCallback?.Invoke();
             }
         });
     }

@@ -11,5 +11,34 @@ namespace Excellcube.Currency.Sample
             CurrencySystem.gold = 500;      
             CurrencySystem.ruby = 10; 
         }
+
+        /// 
+        ///  Currency System 이벤트.
+        /// 
+        
+        public void onGoldUpdated(BigNum value)
+        {
+            Debug.Log("Gold updated : " + value.ToShortForm());
+        }
+
+        public void onRubyUpdated(BigNum value)
+        {
+            Debug.Log("Ruby updated : " + value.ToShortForm());
+        }
+
+
+        /// 
+        ///  Currency Button 이벤트.
+        /// 
+
+        public void PurchaseGoldItem()
+        {
+            Debug.Log("Purchase Gold item!");
+        }
+
+        public void PurchaseRubyItem()
+        {
+            Debug.Log("Purchase Ruby item!");
+        }
     }
 }
