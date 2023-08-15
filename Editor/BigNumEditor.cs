@@ -22,7 +22,7 @@ public class BigNumEditor : PropertyDrawer
         float startY = m_Position.y;
 
         EditorGUI.BeginProperty(position, label, property);
-
+        
         SerializedProperty valueProperty  = property.FindPropertyRelative("m_Value");
 
         double currentPrice = valueProperty.doubleValue;

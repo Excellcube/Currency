@@ -22,7 +22,6 @@ public class PurchaseButton : MonoBehaviour
     /// <summary>
     ///   구매 시 사용되는 재화 종류.
     /// </summary>
-    [Header("Currency Info")]
     [SerializeField]
     private CurrencyType m_CurrencyType;
     public CurrencyType currencyType {
@@ -42,9 +41,7 @@ public class PurchaseButton : MonoBehaviour
             UpdateText(value);
         }
     }
-    
 
-    [Header("Events")]
     [SerializeField]
     private UnityEvent m_OnPurchase = new UnityEvent();
 
