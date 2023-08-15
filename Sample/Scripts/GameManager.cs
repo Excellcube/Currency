@@ -6,7 +6,7 @@ namespace Excellcube.Currency.Sample
 {
     public class GameManager : MonoBehaviour
     {
-        void Start()
+        void Awake()
         {
             CurrencySystem.gold = 500;      
             CurrencySystem.ruby = 10; 

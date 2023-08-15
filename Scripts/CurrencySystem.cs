@@ -17,7 +17,12 @@ public class CurrencySystem : MonoBehaviour {
     ///  외부 접근 편의성을 위한 static 필드 영역.
     /// 
     private static CurrencyModel m_Model = new CurrencyModel();
-    
+
+    /// <summary>
+    /// 시스템 초기화를 진행했는지 여부. 외부 클래스에서 CurrencySystem.gold = {값}과 같이 재화를 초기화 해야 한다.
+    /// </summary>
+    private static bool m_IsInitialized = false;
+
     public static BigNum gold {
         get {
             return m_Model.gold;
@@ -31,6 +36,7 @@ public class CurrencySystem : MonoBehaviour {
             
             s_System.m_OnGoldUpdated.Invoke(value);
             m_Model.gold = value;
+            m_IsInitialized = true;
         }
     }
 
@@ -47,6 +53,7 @@ public class CurrencySystem : MonoBehaviour {
 
             s_System.m_OnRubyUpdated.Invoke(value);
             m_Model.ruby = value;
+            m_IsInitialized = true;
         }
     }
 
@@ -75,5 +82,12 @@ public class CurrencySystem : MonoBehaviour {
 
     private void Awake() {
         s_System = this;
+    }
+
+    private void Start() {
+        if(!m_IsInitialized) {
+            Debug.LogError("[Currency] CurrencySystem이 초기화 되지 않았음.");
+            Debug.LogError("[Currency] 외부의 Awake 이벤트에서 CurrencySystem.gold = 100과 같은 방법으로 초기화를 해야함");
+        }
     }
 }
