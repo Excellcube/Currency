@@ -6,6 +6,11 @@ using Excellcube;
 
 public class GoldField : MonoBehaviour, ICurrencyField {
     [SerializeField]
+    private Image m_Icon;
+    public  Image icon => m_Icon;
+
+
+    [SerializeField]
     private Text m_ValueText;
 
     public void SetValue(BigNum value) {

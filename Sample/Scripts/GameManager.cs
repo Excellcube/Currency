@@ -40,5 +40,20 @@ namespace Excellcube.Currency.Sample
         {
             Debug.Log("Purchase Ruby item!");
         }
+
+
+        ///
+        ///  Add Currency 이벤트.
+        ///
+
+        public void AddGoldWithNoAnimation(int value)
+        {
+            CurrencySystem.gold += value;
+        }
+
+        public void AddRubyWithNoAnimation(int value)
+        {
+            CurrencySystem.ruby += value;
+        }
     }
 }

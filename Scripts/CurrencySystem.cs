@@ -66,9 +66,20 @@ public class CurrencySystem : MonoBehaviour {
     [Header("UI")]
     [SerializeField]
     private GoldField m_GoldField;
+    static public GoldField goldField => s_System.m_GoldField;
 
     [SerializeField]
     private RubyField m_RubyField;
+    static public RubyField rubyField => s_System.m_RubyField;
+
+    [Header("Icons")]
+    [SerializeField]
+    private GameObject m_GoldIconPrefab;
+    static public GameObject goldIconPrefab => s_System.m_GoldIconPrefab;
+
+    [SerializeField]
+    private GameObject m_RubyIconPrefab;
+    static public GameObject rubyIconPrefab => s_System.m_RubyIconPrefab;
 
     [Header("Events")]
     [SerializeField]
@@ -85,9 +96,9 @@ public class CurrencySystem : MonoBehaviour {
     }
 
     private void Start() {
-        if(!m_IsInitialized) {
-            Debug.LogError("[Currency] CurrencySystem이 초기화 되지 않았음.");
-            Debug.LogError("[Currency] 외부의 Awake 이벤트에서 CurrencySystem.gold = 100과 같은 방법으로 초기화를 해야함");
-        }
+        // if(!m_IsInitialized) {
+        //     Debug.LogError("[Currency] CurrencySystem이 초기화 되지 않았음.");
+        //     Debug.LogError("[Currency] 외부의 Awake 이벤트에서 CurrencySystem.gold = 100과 같은 방법으로 초기화를 해야함");
+        // }
     }
 }
