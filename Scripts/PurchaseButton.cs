@@ -75,11 +75,7 @@ public class PurchaseButton : MonoBehaviour
             }
         }
         set {
-            if(m_CurrencyType == CurrencyType.Gold) {
-                CurrencySystem.gold = value;
-            } else {
-                CurrencySystem.ruby = value;
-            }
+            CurrencySystem.Set(m_CurrencyType, value);
         }
     }
 

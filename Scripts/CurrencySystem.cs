@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 using Excellcube;
 using RadiusOne.Currency;
 
@@ -27,33 +28,11 @@ public class CurrencySystem : MonoBehaviour {
         get {
             return m_Model.gold;
         }
-        set {
-            if(s_System.m_GoldField != null) {
-                s_System.m_GoldField.SetValue(value);
-            } else {
-                Debug.LogWarning("GoldField에 UI 컴포넌트가 할당되지 않았음");
-            }
-            
-            s_System.m_OnGoldUpdated.Invoke(value);
-            m_Model.gold = value;
-            m_IsInitialized = true;
-        }
     }
 
     public static BigNum ruby {
         get {
             return m_Model.ruby;
-        }
-        set {
-            if(s_System.m_RubyField != null) {
-                s_System.m_RubyField.SetValue(value);
-            } else {
-                Debug.LogWarning("RubyField에 UI 컴포넌트가 할당되지 않았음");
-            }
-
-            s_System.m_OnRubyUpdated.Invoke(value);
-            m_Model.ruby = value;
-            m_IsInitialized = true;
         }
     }
 
@@ -100,5 +79,161 @@ public class CurrencySystem : MonoBehaviour {
         //     Debug.LogError("[Currency] CurrencySystem이 초기화 되지 않았음.");
         //     Debug.LogError("[Currency] 외부의 Awake 이벤트에서 CurrencySystem.gold = 100과 같은 방법으로 초기화를 해야함");
         // }
+    }
+
+    static public void Set(CurrencyType type, BigNum value)
+    {
+        ICurrencyField field = GetCurrencyField(type);
+        field.SetValue(value);
+
+        UnityEvent<BigNum> onUpdated = GetOnUpdatedEvent(type);
+        onUpdated.Invoke(value);
+
+        SetModelData(type, value);
+
+        m_IsInitialized = true;
+    }
+
+    static public void Add(CurrencyType type, BigNum addedValue, bool withCounting = false) {
+        if(withCounting)
+        {
+            AddWithCounting(type, addedValue);
+        }
+        else
+        {
+            AddImmediately(type, addedValue);
+        }
+    }
+
+    static private void AddImmediately(CurrencyType type, BigNum addedValue) {
+        BigNum prevValue = GetModelData(type);
+        BigNum newValue  = prevValue + addedValue;
+        
+        Set(type, newValue);
+    }
+
+    /// <summary>
+    ///   카운팅이 되면서 금액 증가.
+    /// </summary>
+    static private void AddWithCounting(CurrencyType type, BigNum addedValue) {
+        // 카운팅 효과와 함께 증가.
+        s_System.StartCoroutine( PointCounterUp(type, addedValue) );
+
+        // CurrencyField의 업데이트 없이
+        // Model 정보만 업데이트.
+        BigNum prevValue = GetModelData(type);
+        BigNum newValue  = prevValue + addedValue;
+
+        UnityEvent<BigNum> onUpdated = GetOnUpdatedEvent(type);
+        onUpdated.Invoke(newValue);
+
+        SetModelData(type, newValue);
+    }
+
+    private static IEnumerator PointCounterUp(CurrencyType type, BigNum addedValue, UnityAction finishAction = null)
+    {
+        BigNum prevValue = type == CurrencyType.Gold ? gold : ruby;
+        BigNum targetValue = (prevValue + addedValue).ToDouble();
+        
+        float  countingDuration = 2.0f;      // 2초동안 카운팅.
+        int    framePerSecond = 30;
+        int    countFrames = Mathf.RoundToInt(framePerSecond * countingDuration);
+
+        // 매 프레임마다 증가시킬 값의 스텝 계산.
+        double coinStep = addedValue.ToDouble() / countFrames;
+        if (coinStep == 0)
+        {
+            coinStep = 1;
+        }
+
+        double currValue = prevValue.ToDouble();
+
+        // 카운팅을 하면서 field 값 업데이트.
+        while (currValue < targetValue)
+        {
+            currValue += coinStep;
+
+            ICurrencyField field = GetCurrencyField(type);
+            field.SetValue(currValue);
+
+            yield return null;
+        }
+
+        // overflow된 값이 있을 경우 ceiling 효과.
+        if (currValue > targetValue)
+        {
+            currValue = targetValue.ToDouble();
+        }
+
+        finishAction?.Invoke();
+    }
+
+
+
+    public static UnityEvent<BigNum> GetOnUpdatedEvent(CurrencyType type)
+    {
+        if(type == CurrencyType.Gold)
+        {
+            return onGoldUpdated;
+        }
+        else
+        {
+            return onRubyUpdated;
+        }
+    }
+
+    private static void SetModelData(CurrencyType type, BigNum value)
+    {
+        if(type == CurrencyType.Gold)
+        {
+            m_Model.gold = value;
+        }
+        else
+        {
+            m_Model.ruby = value;
+        }
+    }
+
+    private static BigNum GetModelData(CurrencyType type)
+    {
+        if(type == CurrencyType.Gold)
+        {
+            return m_Model.gold;
+        }
+        else
+        {
+            return m_Model.ruby;
+        }
+    }
+
+    public static GameObject GetIconPrefab(CurrencyType type)
+    {
+        if(type == CurrencyType.Gold)
+        {
+            return CurrencySystem.goldIconPrefab;
+        }
+        else
+        {
+            return CurrencySystem.rubyIconPrefab;
+        }
+    }
+
+    public static RectTransform GetDestination(CurrencyType type)
+    {
+        ICurrencyField field = GetCurrencyField(type);
+        Image icon = field.GetIcon();        
+        return icon.GetComponent<RectTransform>();
+    }
+
+    public static ICurrencyField GetCurrencyField(CurrencyType type)
+    {
+        if(type == CurrencyType.Gold)
+        {
+            return CurrencySystem.goldField;
+        }
+        else
+        {
+            return CurrencySystem.rubyField;
+        }
     }
 }

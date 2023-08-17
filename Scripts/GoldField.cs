@@ -7,7 +7,6 @@ using Excellcube;
 public class GoldField : MonoBehaviour, ICurrencyField {
     [SerializeField]
     private Image m_Icon;
-    public  Image icon => m_Icon;
 
 
     [SerializeField]
@@ -15,5 +14,9 @@ public class GoldField : MonoBehaviour, ICurrencyField {
 
     public void SetValue(BigNum value) {
         m_ValueText.text = value.ToShortForm();
+    }
+
+    public Image GetIcon() {
+        return m_Icon;
     }
 }

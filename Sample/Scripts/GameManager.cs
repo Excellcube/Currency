@@ -8,8 +8,8 @@ namespace Excellcube.Currency.Sample
     {
         void Awake()
         {
-            CurrencySystem.gold = 500;      
-            CurrencySystem.ruby = 10; 
+            CurrencySystem.Set(CurrencyType.Gold, 500);
+            CurrencySystem.Set(CurrencyType.Ruby, 10);
         }
 
         /// 
@@ -39,21 +39,6 @@ namespace Excellcube.Currency.Sample
         public void PurchaseRubyItem()
         {
             Debug.Log("Purchase Ruby item!");
-        }
-
-
-        ///
-        ///  Add Currency 이벤트.
-        ///
-
-        public void AddGoldWithNoAnimation(int value)
-        {
-            CurrencySystem.gold += value;
-        }
-
-        public void AddRubyWithNoAnimation(int value)
-        {
-            CurrencySystem.ruby += value;
         }
     }
 }

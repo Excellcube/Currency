@@ -7,12 +7,15 @@ using Excellcube;
 public class RubyField : MonoBehaviour, ICurrencyField {
     [SerializeField]
     private Image m_Icon;
-    public  Image icon => m_Icon;
     
     [SerializeField]
     private Text m_ValueText;
 
     public void SetValue(BigNum value) {
         m_ValueText.text = value.ToShortForm();
+    }
+
+    public Image GetIcon() {
+        return m_Icon;
     }
 }
