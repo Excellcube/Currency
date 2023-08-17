@@ -22,7 +22,7 @@ public class IconMover : MonoBehaviour
     private Vector3     m_Direction;
 
 
-    public void Move(Transform target, float duration)
+    public void Move(Transform target, float duration, UnityAction finishCallback = null)
     {
         m_RigidBody = transform.GetComponent<Rigidbody2D>();
 
@@ -36,7 +36,7 @@ public class IconMover : MonoBehaviour
         m_Duration = duration;
         t = 0.2f;  // 애니메이션이 느리게 시작됨. 중간 부분부터 애니메이션 실행.
 
-        StartCoroutine( MoveInternal() );
+        StartCoroutine( MoveInternal(finishCallback) );
     }
 
     private Vector3 GetRandomControlPoint(Vector3 start, Vector3 end)
@@ -55,7 +55,7 @@ public class IconMover : MonoBehaviour
         return controlPoint;
     }
 
-    private IEnumerator MoveInternal()
+    private IEnumerator MoveInternal(UnityAction finishCallback)
     {
         while(t < 1)
         {
@@ -68,8 +68,7 @@ public class IconMover : MonoBehaviour
         transform.position = m_ControlPoints[2];
         onFinish?.Invoke();
 
-        // TODO. Pooling 사용.
-        Destroy(transform.gameObject);
+        finishCallback?.Invoke();
     }
 
     private Vector3 CalculateBezierPoint(float t)

@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1787036142830120244}
   - component: {fileID: 1787036142830120203}
+  - component: {fileID: 3469151430676300112}
   m_Layer: 0
   m_Name: CurrencySystem
   m_TagString: Untagged
@@ -46,9 +47,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_GoldField: {fileID: 0}
   m_RubyField: {fileID: 0}
+  m_GoldIconPrefab: {fileID: 0}
+  m_RubyIconPrefab: {fileID: 0}
   m_OnGoldUpdated:
     m_PersistentCalls:
       m_Calls: []
   m_OnRubyUpdated:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &3469151430676300112
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1787036142830120245}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 399dc9bc0ff2b4f39badbcca7909c4c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

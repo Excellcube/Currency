@@ -153,16 +153,16 @@ public class CurrencySystem : MonoBehaviour {
         {
             currValue += coinStep;
 
+            // overflow된 값이 있을 경우 ceiling 효과.
+            if (currValue > targetValue)
+            {
+                currValue = targetValue.ToDouble();
+            }
+
             ICurrencyField field = GetCurrencyField(type);
             field.SetValue(currValue);
 
             yield return null;
-        }
-
-        // overflow된 값이 있을 경우 ceiling 효과.
-        if (currValue > targetValue)
-        {
-            currValue = targetValue.ToDouble();
         }
 
         finishAction?.Invoke();

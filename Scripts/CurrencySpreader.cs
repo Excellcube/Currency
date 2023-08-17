@@ -54,7 +54,7 @@ public class CurrencySpreader : MonoBehaviour
     public void AddCurrencyWithAnimation(int iconCount = 10)
     {
         // type에 맞는 아이콘 N개를 생성
-        GameObject iconPrefab = CurrencySystem.GetIconPrefab(m_Type);
+        // GameObject iconPrefab = CurrencySystem.GetIconPrefab(m_Type);
         Vector3 position = transform.position;
         float seed = 20;
 
@@ -70,14 +70,16 @@ public class CurrencySpreader : MonoBehaviour
             randPosition.y = position.y + Random.Range(-seed, seed);
             randPosition.z = position.z;
 
-            GameObject iconObj = Instantiate(iconPrefab, randPosition, Quaternion.identity, m_Canvas.transform);
+            // GameObject iconObj = Instantiate(iconPrefab, randPosition, Quaternion.identity, m_Canvas.transform);
+            GameObject iconObj = CurrencyIconPool.Instance.Fetch(m_Type);
+            iconObj.transform.position = randPosition;
             icons.Add(iconObj.transform);
         }
 
 
         // 아이콘 이동 애니메이션에 관련된 매개변수들 설정.
         MoveIconsParam param = new MoveIconsParam();
-        
+
         param.start = GetComponent<RectTransform>();;
         param.end   = CurrencySystem.GetDestination(m_Type);
         param.icons = icons;
@@ -108,7 +110,12 @@ public class CurrencySpreader : MonoBehaviour
         for(int i=param.icons.Count - 1 ; i>=0 ; i--)
         {
             IconMover mover = param.icons[i].GetComponent<IconMover>();
-            mover.Move(param.end.transform, 1.0f);
+            mover.Move(param.end.transform, 1.0f, ()=>{
+                // 이동이 완료 됐을 경우 pool에 반환.
+                CurrencyIconPool.Instance.Release(m_Type, mover.gameObject);
+            });
+
+            mover.onFinish.RemoveAllListeners();
 
             if(i == param.icons.Count - 1) {
                 // 첫 번째 아이콘이 목적지에 도착했을때 실행할 이벤트 등록.
