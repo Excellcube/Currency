@@ -174,7 +174,7 @@ public class PurchaseButton : MonoBehaviour
             if(m_Price <= currencyValue) {
                 // 구매에 성공했을 경우.
                 purchaseCallback.Invoke();
-                currencyValue -= m_Price;
+                CurrencySystem.Use(m_CurrencyType, m_Price);
             } else {
                 // 구매에 실패했을 경우.
                 failureCallback?.Invoke();
@@ -190,7 +190,7 @@ public class PurchaseButton : MonoBehaviour
             if(m_Price <= currencyValue) {
                 // 구매에 성공했을 경우.
                 purchaseCallback.Invoke();
-                currencyValue -= m_Price;
+                CurrencySystem.Use(m_CurrencyType, m_Price);
             } else {
                 // 구매에 실패했을 경우.
                 failureCallback?.Invoke();

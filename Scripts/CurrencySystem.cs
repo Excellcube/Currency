@@ -62,12 +62,24 @@ public class CurrencySystem : MonoBehaviour {
 
     [Header("Events")]
     [SerializeField]
+    private UnityEvent<BigNum> m_OnGoldAdded = new UnityEvent<BigNum>();
+    static public UnityEvent<BigNum> onGoldAdded => s_System.m_OnGoldAdded;
+    [SerializeField]
     private UnityEvent<BigNum> m_OnGoldUpdated = new UnityEvent<BigNum>();
     static public UnityEvent<BigNum> onGoldUpdated => s_System.m_OnGoldUpdated;
+    [SerializeField]
+    private UnityEvent<BigNum> m_OnGoldUsed = new UnityEvent<BigNum>();
+    static public UnityEvent<BigNum> onGoldUsed => s_System.m_OnGoldUsed;
 
+    [SerializeField]
+    private UnityEvent<BigNum> m_OnRubyAdded = new UnityEvent<BigNum>();
+    static public UnityEvent<BigNum> onRubyAdded => s_System.m_OnRubyAdded;
     [SerializeField]
     private UnityEvent<BigNum> m_OnRubyUpdated = new UnityEvent<BigNum>();
     static public UnityEvent<BigNum> onRubyUpdated => s_System.m_OnRubyUpdated;
+    [SerializeField]
+    private UnityEvent<BigNum> m_OnRubyUsed = new UnityEvent<BigNum>();
+    static public UnityEvent<BigNum> onRubyUsed => s_System.m_OnRubyUsed;
 
 
     private void Awake() {
@@ -110,6 +122,9 @@ public class CurrencySystem : MonoBehaviour {
         BigNum newValue  = prevValue + addedValue;
         
         Set(type, newValue);
+
+        var onAddedEvent = GetOnAddedEvent(type);
+        onAddedEvent?.Invoke(addedValue);
     }
 
     /// <summary>
@@ -128,6 +143,16 @@ public class CurrencySystem : MonoBehaviour {
         onUpdated.Invoke(newValue);
 
         SetModelData(type, newValue);
+    }
+
+    static public void Use(CurrencyType type, BigNum usedValue) {
+        BigNum prevValue = GetModelData(type);
+        BigNum newValue = prevValue - usedValue;
+
+        Set(type, newValue);
+
+        var onUsedEvent = GetOnUsedEvent(type);
+        onUsedEvent?.Invoke(usedValue);
     }
 
     private static IEnumerator PointCounterUp(CurrencyType type, BigNum addedValue, UnityAction finishAction = null)
@@ -168,7 +193,17 @@ public class CurrencySystem : MonoBehaviour {
         finishAction?.Invoke();
     }
 
-
+    public static UnityEvent<BigNum> GetOnAddedEvent(CurrencyType type)
+    {
+        if(type == CurrencyType.Gold)
+        {
+            return onGoldAdded;
+        }
+        else
+        {
+            return onRubyAdded;
+        }
+    }
 
     public static UnityEvent<BigNum> GetOnUpdatedEvent(CurrencyType type)
     {
@@ -179,6 +214,18 @@ public class CurrencySystem : MonoBehaviour {
         else
         {
             return onRubyUpdated;
+        }
+    }
+
+    public static UnityEvent<BigNum> GetOnUsedEvent(CurrencyType type)
+    {
+        if(type == CurrencyType.Gold)
+        {
+            return onGoldUsed;
+        }
+        else
+        {
+            return onRubyUsed;
         }
     }
 
